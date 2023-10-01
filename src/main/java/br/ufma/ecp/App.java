@@ -14,12 +14,10 @@ public class App
     {
 
     
-        String input = "45  + if - \"ola\" laranja 876";
+        String input = "289";
         Scanner scan = new Scanner (input.getBytes());
-        for (Token tk = scan.nextToken(); tk.type != EOF; tk = scan.nextToken()) {
-            System.out.println(tk);
-        }
-
+        System.out.println(scan.nextToken());
+        
         /*
         Parser p = new Parser (input.getBytes());
         p.parse();
