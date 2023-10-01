@@ -9,21 +9,17 @@ public enum TokenType {
      // Literals.
      NUMBER,
      STRING,
-
-
      IDENT,
 
- 
-     // keywords
-     METHOD,
-     WHILE,
-     IF,
-     CLASS,
-     CONSTRUCTOR,
+    // keywords
+    WHILE, CLASS,CONSTRUCTOR,FUNCTION,
+    METHOD,FIELD,STATIC,VAR,INT,
+    CHAR,BOOLEAN,VOID,TRUE,FALSE,
+    NULL,THIS,LET,DO,IF,ELSE, RETURN,
 
-     EOF,
+    EOF,
 
-     ILLEGAL;
+    ILLEGAL;
 
      static public boolean isSymbol (char c) {
         String symbols = "{}()[].,;+-*/&|<>=~";
