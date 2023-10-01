@@ -4,7 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 public enum TokenType {
-    PLUS,MINUS,
+    //Symbols
+    LPAREN,RPAREN,
+    LBRACE, RBRACE,
+    LBRACKET,RBRACKET,
+    COMMA, SEMICOLON, DOT,
+    PLUS,  MINUS,ASTERISK, SLASH,
+    AND, OR, NOT,
+    LT, GT, EQ,
 
      // Literals.
      NUMBER,
