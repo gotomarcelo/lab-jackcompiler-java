@@ -28,9 +28,9 @@ public enum TokenType {
 
     ILLEGAL;
 
-     static public boolean isSymbol (char c) {
+     static public boolean isSymbol (String lexeme) {
         String symbols = "{}()[].,;+-*/&|<>=~";
-        return symbols.indexOf(c) > -1;
+        return symbols.indexOf(lexeme) > -1;
     }
 
 
