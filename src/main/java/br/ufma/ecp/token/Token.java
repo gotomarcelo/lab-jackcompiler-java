@@ -12,10 +12,10 @@ public class Token {
     }
 
     public String toString() {
-         String categoria = type.toString().toLowerCase();
+        String categoria = type.toString().toLowerCase();
 
         String valor = lexeme;
-        if (TokenType.isSymbol(lexeme)) {
+        if (lexeme.length() == 1 && TokenType.isSymbol(lexeme.charAt(0))) {
             categoria = "symbol";
             //Os símbolos <, >, ", e & são impressos como &lt;  &gt;  &quot; e &amp; Para não conflitar com o significado destes símbolos no XML
             if (valor.equals(">")) {
@@ -38,6 +38,12 @@ public class Token {
           categoria = "keyword";
         }
         return "<" + categoria + "> " + valor  + " </" + categoria + ">";
+  
+
+    }
+    
+    public String value () {
+        return type.value;
     }
     
 }

@@ -4,33 +4,48 @@ import java.util.List;
 import java.util.Map;
 
 public enum TokenType {
-    //Symbols
-    LPAREN,RPAREN,
-    LBRACE, RBRACE,
-    LBRACKET,RBRACKET,
-    COMMA, SEMICOLON, DOT,
-    PLUS,  MINUS,ASTERISK, SLASH,
-    AND, OR, NOT,
-    LT, GT, EQ,
+    PLUS,MINUS, SLASH,
 
      // Literals.
      NUMBER,
      STRING,
+
+
      IDENT,
 
-    // keywords
-    WHILE, CLASS,CONSTRUCTOR,FUNCTION,
-    METHOD,FIELD,STATIC,VAR,INT,
-    CHAR,BOOLEAN,VOID,TRUE,FALSE,
-    NULL,THIS,LET,DO,IF,ELSE, RETURN,
+ 
+     // keywords
+     METHOD,
+     WHILE,
+     IF,
+     CLASS,
+     CONSTRUCTOR,
+     FUNCTION,
+     FIELD,STATIC,VAR,INT,
+     CHAR,BOOLEAN,VOID,TRUE,FALSE,
+     NULL,THIS,LET,DO,ELSE, RETURN,
 
-    EOF,
+      // symbols
+    LPAREN,RPAREN,
+    LBRACE, RBRACE,
+    LBRACKET,RBRACKET,
 
-    ILLEGAL;
+    COMMA, SEMICOLON, DOT,
+  
+    ASTERISK,
 
-     static public boolean isSymbol (String lexeme) {
+    AND, OR, NOT,
+
+    LT, GT, EQ,
+ 
+
+     EOF,
+
+     ILLEGAL;
+
+    static public boolean isSymbol (char c) {
         String symbols = "{}()[].,;+-*/&|<>=~";
-        return symbols.indexOf(lexeme) > -1;
+        return symbols.indexOf(c) > -1;
     }
 
 
@@ -41,9 +56,20 @@ public enum TokenType {
                 WHILE,
                 IF,
                 CLASS,
-                CONSTRUCTOR
+                CONSTRUCTOR,FUNCTION,
+     FIELD,STATIC,VAR,INT,
+     CHAR,BOOLEAN,VOID,TRUE,FALSE,
+     NULL,THIS,LET,DO,ELSE, RETURN
             );
             return keywords.contains(type);
     }
+    private TokenType() {
+    }
+
+    private TokenType(String value) {
+        this.value = value;
+    }
+
+    public String value;
 
 }
