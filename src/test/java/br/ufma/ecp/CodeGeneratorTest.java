@@ -6,46 +6,45 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import org.junit.Test;
 
-
 public class CodeGeneratorTest {
     @Test
-    public void testInt () {
+    public void testInt() {
         var input = """
-            10;
-            """;
-        
+                10;
+                """;
+
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
         parser.parseExpression();
         String actual = parser.VMOutput();
         String expected = """
-                push constant 10       
+                push constant 10
                     """;
-            assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testSimpleExpression () {
+    public void testSimpleExpression() {
         var input = """
-            10 + 30;
-            """;
-        
+                10 + 30;
+                """;
+
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
         parser.parseExpression();
         String actual = parser.VMOutput();
         String expected = """
                 push constant 10
                 push constant 30
-                add       
+                add
                     """;
-            assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testLiteralString () {
+    public void testLiteralString() {
         var input = """
-            "OLA";
-            """;
-        
+                "OLA";
+                """;
+
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
         parser.parseExpression();
         String actual = parser.VMOutput();
@@ -59,6 +58,67 @@ public class CodeGeneratorTest {
                 push constant 65
                 call String.appendChar 2
                     """;
-            assertEquals(expected, actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testFalse() {
+        var input = """
+                false;
+                """;
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseExpression();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 0
+                    """;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testNull() {
+        var input = """
+                null;
+                """;
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseExpression();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 0
+                    """;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testTrue() {
+        var input = """
+                true;
+                """;
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseExpression();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 0
+                not
+                    """;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testThis() {
+        var input = """
+                this;
+                """;
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseExpression();
+        String actual = parser.VMOutput();
+        String expected = """
+                push pointer 0
+                    """;
+        assertEquals(expected, actual);
     }
 }

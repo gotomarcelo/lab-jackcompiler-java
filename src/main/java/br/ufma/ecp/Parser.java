@@ -1,6 +1,5 @@
 package br.ufma.ecp;
 
-
 import br.ufma.ecp.VMWriter.Command;
 import br.ufma.ecp.VMWriter.Segment;
 import br.ufma.ecp.token.Token;
@@ -199,10 +198,14 @@ public class Parser {
             case FALSE:
             case NULL:
             case TRUE:
-                expectPeek(TokenType.FALSE, TokenType.NULL, TokenType.TRUE);
+                expectPeek(FALSE, NULL, TRUE);
+                vMWriter.writePush(Segment.CONST, 0);
+                if (currentToken.type == TRUE)
+                    vMWriter.writeArithmetic(Command.NOT);
                 break;
             case THIS:
-                expectPeek(TokenType.THIS);
+                expectPeek(THIS);
+                vMWriter.writePush(Segment.POINTER, 0);
                 break;
             case IDENT:
                 expectPeek(TokenType.IDENT);
