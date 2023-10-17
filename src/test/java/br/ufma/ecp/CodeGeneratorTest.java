@@ -10,7 +10,7 @@ public class CodeGeneratorTest {
     @Test
     public void testInt() {
         var input = """
-                10;
+                10
                 """;
 
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
@@ -25,7 +25,7 @@ public class CodeGeneratorTest {
     @Test
     public void testSimpleExpression() {
         var input = """
-                10 + 30;
+                10 + 30
                 """;
 
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
@@ -42,7 +42,7 @@ public class CodeGeneratorTest {
     @Test
     public void testLiteralString() {
         var input = """
-                "OLA";
+                "OLA"
                 """;
 
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
@@ -64,7 +64,7 @@ public class CodeGeneratorTest {
     @Test
     public void testFalse() {
         var input = """
-                false;
+                false
                 """;
 
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
@@ -79,7 +79,7 @@ public class CodeGeneratorTest {
     @Test
     public void testNull() {
         var input = """
-                null;
+                null
                 """;
 
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
@@ -94,7 +94,7 @@ public class CodeGeneratorTest {
     @Test
     public void testTrue() {
         var input = """
-                true;
+                true
                 """;
 
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
@@ -110,7 +110,7 @@ public class CodeGeneratorTest {
     @Test
     public void testThis() {
         var input = """
-                this;
+                this
                 """;
 
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));

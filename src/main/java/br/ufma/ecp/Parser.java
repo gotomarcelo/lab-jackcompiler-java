@@ -238,7 +238,7 @@ public class Parser {
     }
 
     static public boolean isOperator(String op) {
-        return "+-*/<>=~&|".contains(op);
+        return !op.isEmpty() && "+-*/<>=~&|".contains(op);
     }
 
     void parseExpression() {
