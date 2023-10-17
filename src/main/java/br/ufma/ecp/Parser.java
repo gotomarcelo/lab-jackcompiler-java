@@ -188,6 +188,13 @@ public class Parser {
                 break;
             case STRING:
                 expectPeek(TokenType.STRING);
+                var strValue = currentToken.lexeme;
+                vMWriter.writePush(Segment.CONST, strValue.length());
+                vMWriter.writeCall("String.new", 1);
+                for (int i = 0; i < strValue.length(); i++) {
+                    vMWriter.writePush(Segment.CONST, strValue.charAt(i));
+                    vMWriter.writeCall("String.appendChar", 2);
+                }
                 break;
             case FALSE:
             case NULL:
