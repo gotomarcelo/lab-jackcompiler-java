@@ -140,11 +140,14 @@ public class Parser {
 
     void parseReturn() {
         printNonTerminal("returnStatement");
-        expectPeek(TokenType.RETURN);
-        if (!peekTokenIs(TokenType.SEMICOLON)) {
+        expectPeek(RETURN);
+        if (!peekTokenIs(SEMICOLON)) {
             parseExpression();
+        } else {
+            vMWriter.writePush(Segment.CONST, 0);
         }
-        expectPeek(TokenType.SEMICOLON);
+        expectPeek(SEMICOLON);
+        vMWriter.writeReturn();
 
         printNonTerminal("/returnStatement");
     }

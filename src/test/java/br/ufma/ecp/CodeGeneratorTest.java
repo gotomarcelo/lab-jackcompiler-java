@@ -123,34 +123,66 @@ public class CodeGeneratorTest {
     }
 
     @Test
-    public void testNot () {
+    public void testNot() {
         var input = """
-            ~ false
-            """;
-        
+                ~ false
+                """;
+
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
         parser.parseExpression();
         String actual = parser.VMOutput();
         String expected = """
-                push constant 0   
-                not    
+                push constant 0
+                not
                     """;
-            assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testMinus () {
+    public void testMinus() {
         var input = """
-            - 10
-            """;
-        
+                - 10
+                """;
+
         var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
         parser.parseExpression();
         String actual = parser.VMOutput();
         String expected = """
-                push constant 10   
-                neg    
+                push constant 10
+                neg
                     """;
-            assertEquals(expected, actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testReturn() {
+        var input = """
+                return;
+                """;
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseStatement();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 0
+                return
+                    """;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testReturnExpr() {
+        var input = """
+                return 10;
+                """;
+
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseStatement();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 10
+                return
+                    """;
+        assertEquals(expected, actual);
     }
 }
