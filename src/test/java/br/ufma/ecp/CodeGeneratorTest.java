@@ -121,4 +121,36 @@ public class CodeGeneratorTest {
                     """;
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void testNot () {
+        var input = """
+            ~ false
+            """;
+        
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseExpression();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 0   
+                not    
+                    """;
+            assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testMinus () {
+        var input = """
+            - 10
+            """;
+        
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseExpression();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 10   
+                neg    
+                    """;
+            assertEquals(expected, actual);
+    }
 }

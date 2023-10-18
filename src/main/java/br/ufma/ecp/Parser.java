@@ -227,8 +227,14 @@ public class Parser {
                 break;
             case MINUS:
             case NOT:
-                expectPeek(TokenType.MINUS, TokenType.NOT);
+                expectPeek(MINUS, NOT);
+                var op = currentToken.type;
                 parseTerm();
+                if (op == MINUS)
+                    vMWriter.writeArithmetic(Command.NEG);
+                else
+                    vMWriter.writeArithmetic(Command.NOT);
+    
                 break;
             default:
                 throw error(peekToken, "term expected");
