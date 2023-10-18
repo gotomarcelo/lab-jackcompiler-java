@@ -17,6 +17,8 @@ public class Parser {
     private StringBuilder xmlOutput = new StringBuilder();
     private String className;
     private VMWriter vMWriter;
+    private int ifLabelNum = 0;
+    private int whileLabelNum = 0;
 
     public Parser(byte[] input) {
         scan = new Scanner(input);
@@ -60,22 +62,37 @@ public class Parser {
     void parseIf() {
         printNonTerminal("ifStatement");
 
-        expectPeek(TokenType.IF);
-        expectPeek(TokenType.LPAREN);
+        var labelTrue = "IF_TRUE" + ifLabelNum;
+        var labelFalse = "IF_FALSE" + ifLabelNum;
+        var labelEnd = "IF_END" + ifLabelNum;
+
+        ifLabelNum++;
+    
+        expectPeek(IF);
+        expectPeek(LPAREN);
         parseExpression();
-        expectPeek(TokenType.RPAREN);
-        expectPeek(TokenType.LBRACE);
+        expectPeek(RPAREN);
+
+        vMWriter.writeIf(labelTrue);
+        vMWriter.writeGoto(labelFalse);
+        vMWriter.writeLabel(labelTrue);
+    
+        expectPeek(LBRACE);
         parseStatements();
-        expectPeek(TokenType.RBRACE);
+        expectPeek(RBRACE);
+        if (peekTokenIs(ELSE)){
+            vMWriter.writeGoto(labelEnd);
+        }
 
-        if (peekTokenIs(TokenType.ELSE)) {
-            expectPeek(TokenType.ELSE);
+        vMWriter.writeLabel(labelFalse);
 
-            expectPeek(TokenType.LBRACE);
-
+        if (peekTokenIs(ELSE))
+        {
+            expectPeek(ELSE);
+            expectPeek(LBRACE);
             parseStatements();
-
-            expectPeek(TokenType.RBRACE);
+            expectPeek(RBRACE);
+            vMWriter.writeLabel(labelEnd);
         }
 
         printNonTerminal("/ifStatement");
@@ -237,7 +254,7 @@ public class Parser {
                     vMWriter.writeArithmetic(Command.NEG);
                 else
                     vMWriter.writeArithmetic(Command.NOT);
-    
+
                 break;
             default:
                 throw error(peekToken, "term expected");
@@ -345,6 +362,9 @@ public class Parser {
 
     void parseSubroutineDec() {
         printNonTerminal("subroutineDec");
+
+        ifLabelNum = 0;
+        whileLabelNum = 0;
 
         expectPeek(TokenType.CONSTRUCTOR, TokenType.FUNCTION, TokenType.METHOD);
         var subroutineType = currentToken.type;
