@@ -7,6 +7,7 @@ import br.ufma.ecp.token.TokenType;
 import static br.ufma.ecp.token.TokenType.*;
 
 import br.ufma.ecp.SymbolTable.Kind;
+import br.ufma.ecp.SymbolTable.Symbol;
 
 public class Parser {
 
@@ -248,6 +249,9 @@ public class Parser {
                 break;
             case IDENT:
                 expectPeek(TokenType.IDENT);
+
+                Symbol sym = symTable.resolve(currentToken.lexeme);
+
                 if (peekTokenIs(TokenType.LPAREN) || peekTokenIs(TokenType.DOT)) {
                     parseSubroutineCall();
                 } else { // variavel comum ou array
@@ -256,7 +260,9 @@ public class Parser {
                         parseExpression();
 
                         expectPeek(TokenType.RBRACKET);// push the value of the address pointer back onto stack
-                    }
+                    } else { //variavel simples
+                        vMWriter.writePush(kind2Segment(sym.kind()), sym.index());
+                    }  
                 }
                 break;
             case LPAREN:
@@ -542,6 +548,18 @@ public class Parser {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
         return new ParseError();
+    }
+
+    private Segment kind2Segment(Kind kind) {
+        if (kind == Kind.STATIC)
+            return Segment.STATIC;
+        if (kind == Kind.FIELD)
+            return Segment.THIS;
+        if (kind == Kind.VAR)
+            return Segment.LOCAL;
+        if (kind == Kind.ARG)
+            return Segment.ARG;
+        return null;
     }
 
 }
