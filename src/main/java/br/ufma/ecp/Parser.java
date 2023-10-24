@@ -47,7 +47,7 @@ public class Parser {
         printNonTerminal("class");
         expectPeek(TokenType.CLASS);
         expectPeek(TokenType.IDENT);
-        className = currentToken.value();
+        className = currentToken.lexeme;
         expectPeek(TokenType.LBRACE);
 
         while (peekTokenIs(TokenType.STATIC) || peekTokenIs(TokenType.FIELD)) {
@@ -407,7 +407,7 @@ public class Parser {
         expectPeek(TokenType.VOID, TokenType.INT, TokenType.CHAR, TokenType.BOOLEAN, TokenType.IDENT);
         expectPeek(TokenType.IDENT);
 
-        var functionName = className + "." + currentToken.value();
+        var functionName = className + "." + currentToken.lexeme;
 
         expectPeek(TokenType.LPAREN);
         parseParameterList();
@@ -454,6 +454,10 @@ public class Parser {
         while (peekTokenIs(TokenType.VAR)) {
             parseVarDec();
         }
+
+        var nlocals = symTable.varCount(Kind.VAR);
+
+        vMWriter.writeFunction(functionName, nlocals);
 
         parseStatements();
         expectPeek(TokenType.RBRACE);
