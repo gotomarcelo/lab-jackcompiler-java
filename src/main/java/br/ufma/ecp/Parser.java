@@ -170,6 +170,7 @@ public class Parser {
         expectPeek(TokenType.IDENT);
         parseSubroutineCall();
         expectPeek(TokenType.SEMICOLON);
+        vMWriter.writePop(Segment.TEMP, 0);
 
         printNonTerminal("/doStatement");
     }
