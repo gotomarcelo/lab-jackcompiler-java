@@ -373,28 +373,42 @@ public class Parser {
         printNonTerminal("/letStatement");
     }
 
-    void parseSubroutineCall() {
+    void parseSubroutineCall() {     
+        
 
         var nArgs = 0;
 
-        if (peekTokenIs(TokenType.LPAREN)) { // método da propria classe
-            expectPeek(TokenType.LPAREN);
+        var ident = currentToken.lexeme;
+        var symbol = symTable.resolve(ident); // classe ou objeto
+        var functionName = ident + ".";
 
+        if (peekTokenIs(LPAREN)) { // método da propria classe
+            expectPeek(LPAREN);
+            vMWriter.writePush(Segment.POINTER, 0);
             nArgs = parseExpressionList() + 1;
-            expectPeek(TokenType.RPAREN);
-
+            expectPeek(RPAREN);
+            functionName = className + "." + ident;
         } else {
             // pode ser um metodo de um outro objeto ou uma função
-            expectPeek(TokenType.DOT);
-            expectPeek(TokenType.IDENT); // nome da função
+            expectPeek(DOT);
+            expectPeek(IDENT); // nome da função
 
-            expectPeek(TokenType.LPAREN);
+            if (symbol != null) { // é um metodo
+                functionName = symbol.type() + "." + currentToken.lexeme;
+                vMWriter.writePush(kind2Segment(symbol.kind()), symbol.index());
+                nArgs = 1; // do proprio objeto
+            } else {
+                functionName += currentToken.lexeme; // é uma função
+            }
+
+            expectPeek(LPAREN);
             nArgs += parseExpressionList();
 
-            expectPeek(TokenType.RPAREN);
+            expectPeek(RPAREN);
         }
 
-    }
+        vMWriter.writeCall(functionName, nArgs);
+  }
 
     void parseClassVarDec() {
         printNonTerminal("classVarDec");
