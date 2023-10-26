@@ -72,7 +72,7 @@ public class Parser {
         var labelEnd = "IF_END" + ifLabelNum;
 
         ifLabelNum++;
-    
+
         expectPeek(IF);
         expectPeek(LPAREN);
         parseExpression();
@@ -81,18 +81,17 @@ public class Parser {
         vMWriter.writeIf(labelTrue);
         vMWriter.writeGoto(labelFalse);
         vMWriter.writeLabel(labelTrue);
-    
+
         expectPeek(LBRACE);
         parseStatements();
         expectPeek(RBRACE);
-        if (peekTokenIs(ELSE)){
+        if (peekTokenIs(ELSE)) {
             vMWriter.writeGoto(labelEnd);
         }
 
         vMWriter.writeLabel(labelFalse);
 
-        if (peekTokenIs(ELSE))
-        {
+        if (peekTokenIs(ELSE)) {
             expectPeek(ELSE);
             expectPeek(LBRACE);
             parseStatements();
@@ -256,13 +255,18 @@ public class Parser {
                     parseSubroutineCall();
                 } else { // variavel comum ou array
                     if (peekTokenIs(TokenType.LBRACKET)) { // array
-                        expectPeek(TokenType.LBRACKET);
+                        expectPeek(LBRACKET);
                         parseExpression();
-
-                        expectPeek(TokenType.RBRACKET);// push the value of the address pointer back onto stack
-                    } else { //variavel simples
                         vMWriter.writePush(kind2Segment(sym.kind()), sym.index());
-                    }  
+                        vMWriter.writeArithmetic(Command.ADD);
+        
+
+                        expectPeek(RBRACKET);
+                        vMWriter.writePop(Segment.POINTER, 1); // pop address pointer into pointer 1
+                        vMWriter.writePush(Segment.THAT, 0);   // push the value of the address pointer back onto stack
+                    } else { // variavel simples
+                        vMWriter.writePush(kind2Segment(sym.kind()), sym.index());
+                    }
                 }
                 break;
             case LPAREN:
@@ -327,7 +331,7 @@ public class Parser {
     }
 
     void parseLet() {
-        
+
         var isArray = false;
 
         printNonTerminal("letStatement");
@@ -336,18 +340,29 @@ public class Parser {
 
         var symbol = symTable.resolve(currentToken.lexeme);
 
-        if (peekTokenIs(TokenType.LBRACKET)) {
-            expectPeek(TokenType.LBRACKET);
+        if (peekTokenIs(LBRACKET)) { // array
+            expectPeek(LBRACKET);
             parseExpression();
-            expectPeek(TokenType.RBRACKET);
+            
+            vMWriter.writePush(kind2Segment(symbol.kind()), symbol.index());
+            vMWriter.writeArithmetic(Command.ADD);
+    
+            expectPeek(RBRACKET);
+
+
 
             isArray = true;
         }
 
-        expectPeek(TokenType.EQ);
+        expectPeek(EQ);
         parseExpression();
 
         if (isArray) {
+
+            vMWriter.writePop(Segment.TEMP, 0);    // push result back onto stack
+            vMWriter.writePop(Segment.POINTER, 1); // pop address pointer into pointer 1
+            vMWriter.writePush(Segment.TEMP, 0);   // push result back onto stack
+            vMWriter.writePop(Segment.THAT, 0);    // Store right hand side evaluation in THAT 0.
     
 
         } else {
@@ -422,7 +437,8 @@ public class Parser {
 
         if (subroutineType == METHOD) {
             symTable.define("this", className, Kind.ARG);
-        };
+        }
+        ;
 
         // 'int' | 'char' | 'boolean' | className
         expectPeek(TokenType.VOID, TokenType.INT, TokenType.CHAR, TokenType.BOOLEAN, TokenType.IDENT);
