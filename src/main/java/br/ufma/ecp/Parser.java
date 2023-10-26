@@ -453,7 +453,6 @@ public class Parser {
         if (subroutineType == METHOD) {
             symTable.define("this", className, Kind.ARG);
         }
-        ;
 
         // 'int' | 'char' | 'boolean' | className
         expectPeek(TokenType.VOID, TokenType.INT, TokenType.CHAR, TokenType.BOOLEAN, TokenType.IDENT);
@@ -510,6 +509,17 @@ public class Parser {
         var nlocals = symTable.varCount(Kind.VAR);
 
         vMWriter.writeFunction(functionName, nlocals);
+
+        if (subroutineType == CONSTRUCTOR) {
+            vMWriter.writePush(Segment.CONST, symTable.varCount(Kind.FIELD));
+            vMWriter.writeCall("Memory.alloc", 1);
+            vMWriter.writePop(Segment.POINTER, 0);
+        }
+
+        if (subroutineType == METHOD) {
+            vMWriter.writePush(Segment.ARG, 0);
+            vMWriter.writePop(Segment.POINTER, 0);
+        }
 
         parseStatements();
         expectPeek(TokenType.RBRACE);
